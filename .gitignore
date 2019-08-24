@@ -21,6 +21,7 @@ sdist/
 var/
 wheels/
 *.egg-info/
+.vscode/
 .installed.cfg
 *.egg
 MANIFEST
@@ -89,6 +90,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+py3-venv/
 
 # Spyder project settings
 .spyderproject
