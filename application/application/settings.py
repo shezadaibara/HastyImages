@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from .configs import MYSQL, RABBIT_MQ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,9 +35,13 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,8 +74,17 @@ WSGI_APPLICATION = 'application.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': MYSQL['db'],
+        'USER': MYSQL['username'],
+        'PASSWORD': MYSQL['password'],
+        'HOST': MYSQL['host'],
+        'PORT': MYSQL['port'],
+        'TEST': {
+            'NAME': MYSQL['test_db'],
+        },
     }
 }
 
@@ -112,3 +126,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:9001', '127.0.0.1:9001'
+)
+
+Pagination_class = 'rest_framework.pagination.PageNumberPagination'
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': Pagination_class,
+    'PAGE_SIZE': 20,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
+    ),
+}
