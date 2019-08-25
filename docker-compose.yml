@@ -34,8 +34,8 @@ services:
       - mysql_data:/var/lib/mysql
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_DATABASE: 'hasty_database'
-      MYSQL_USER: 'root'
+      MYSQL_DATABASE: "hasty_database"
+      MYSQL_USER: "root"
       MYSQL_PASSWORD: ""
     ports:
       - "3306:3306"
@@ -62,7 +62,7 @@ services:
       retries: 3
       start_period: 3m
 
- # Django web
+#  Django web
   # backend:
   #   build:
   #     context: .
@@ -73,7 +73,7 @@ services:
   #     - "./application/:/image_service"
   #   environment:
   #     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-  #     MYSQL_DATABASE: 'hasty_image'
+  #     MYSQL_DATABASE: 'hasty_database'
   #     MYSQL_USER: 'root'
   #     MYSQL_PASSWORD: ""
   #   ports:

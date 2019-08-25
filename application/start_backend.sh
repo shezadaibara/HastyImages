@@ -2,7 +2,8 @@
 
 # Start Gunicorn processes
 echo Running Migration.
-# python manage.py migrate
+python manage.py migrate
+
 
 echo Starting Gunicorn.
 gunicorn application.wsgi:application \

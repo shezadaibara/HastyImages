@@ -17,4 +17,5 @@ ADD . /image_service/
 
 RUN pwd
 # Install any needed packages specified in requirements.txt
-RUN pip install -r ./application/requirements.txt
+RUN pip install --upgrade pip && pip install -r ./application/requirements.txt
+
