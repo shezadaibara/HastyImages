@@ -15,16 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from invitation import views
+from invitation import views as invitation_views
+from gallery import views as gallery_views
 from rest_framework import routers
-from gallery.views import FilePolicyAPI
+from gallery.views import FilePolicyAPI, FileUploadCompleteHandler
+from django.views.generic.base import TemplateView
 
 
 router = routers.DefaultRouter()
-router.register(r'invitation', views.InvitationViewSet)
+router.register(r'invitation', invitation_views.InvitationViewSet)
+router.register(r'images', gallery_views.ImagesViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    # path('admin/', admin.site.urls),
-    path(r'^api/files/policy/$', FilePolicyAPI.as_view(), name='upload-policy'),
+    path('api/upload/', TemplateView.as_view(template_name='upload.html'), name='upload-home'),
+    path('api/files/policy/', FilePolicyAPI.as_view(), name='upload-policy'),
+    path('api/files/complete/', FileUploadCompleteHandler.as_view(), name='upload-complete'),
 ]

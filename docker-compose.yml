@@ -43,6 +43,10 @@ services:
         report:
             aliases:
                 - net-mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
 
   minio1:
     container_name: hasty_minio1
@@ -62,34 +66,34 @@ services:
       retries: 3
       start_period: 3m
 
-#  Django web
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: "./application/Dockerfile"
-  #   command: sh start_backend.sh
-  #   container_name: hasty_backend
-  #   volumes:
-  #     - "./application/:/image_service"
-  #   environment:
-  #     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-  #     MYSQL_DATABASE: 'hasty_database'
-  #     MYSQL_USER: 'root'
-  #     MYSQL_PASSWORD: ""
-  #   ports:
-  #     - "8000:8000"
-  #   links:
-  #     - mysql
-  #     - rabbitmq
-  #     - minio1
-  #   depends_on:
-  #     - rabbitmq
-  #     - mysql
-  #     - minio1
-  #   networks:
-  #       report:
-  #           aliases:
-  #               - net-service
+  ## Django web
+  backend:
+    build:
+      context: .
+      dockerfile: "./application/Dockerfile"
+    command: sh start_backend.sh
+    container_name: hasty_backend
+    volumes:
+      - "./application/:/image_service"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: 'hasty_database'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: ""
+    ports:
+      - "8000:8000"
+    links:
+      - mysql
+      - rabbitmq
+      - minio1
+    depends_on:
+      - mysql
+      - rabbitmq
+      - minio1
+    networks:
+        report:
+            aliases:
+                - net-service
 
 networks:
   report:

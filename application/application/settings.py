@@ -1,5 +1,5 @@
 import os
-from .configs import MYSQL, RABBIT_MQ, MINIO, S3_CONFIG
+from .configs import MYSQL, RABBIT_MQ, S3_CONFIG
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'invitation.apps.InvitationConfig',
-    'gallery.apps.GalleryConfig'
+    'gallery.apps.GalleryConfig',
+    'django_celery_results'
 ]
 
 MIDDLEWARE = [
@@ -44,7 +45,7 @@ ROOT_URLCONF = 'application.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,7 +120,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CORS_ORIGIN_WHITELIST = (
-    'localhost:9001', '127.0.0.1:9001'
+    'localhost:9001', '127.0.0.1:9001', 'minio1:9001'
 )
 
 Pagination_class = 'rest_framework.pagination.PageNumberPagination'
@@ -132,17 +133,19 @@ REST_FRAMEWORK = {
 import datetime
 DEFAULT_TOKEN_EXPIRE_TIMESPAN = datetime.timedelta(days=7)
 
-
 STATIC_URL = '/static/'
 STATIC_ROOT = './static_files/'
 
-DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
-STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
-MINIO_STORAGE_ENDPOINT = 'minio1:9000'
-MINIO_STORAGE_ACCESS_KEY = MINIO['access_key']
-MINIO_STORAGE_SECRET_KEY = MINIO['secret_key']
-MINIO_STORAGE_USE_HTTPS = False
-MINIO_STORAGE_MEDIA_BUCKET_NAME = MINIO['media-bucket']
-MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
-MINIO_STORAGE_STATIC_BUCKET_NAME = MINIO['static-bucket']
-MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
+
+CELERY_RESULT_BACKEND = 'django-db'
+
+RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', RABBIT_MQ['host'])
+
+if RABBIT_HOSTNAME.startswith('tcp://'):
+    RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
+
+CELERY_BROKER_URL = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
+    user=os.environ.get('RABBIT_ENV_USER', RABBIT_MQ['user']),
+    password=os.environ.get('RABBIT_ENV_RABBITMQ_PASS', RABBIT_MQ['password']),
+    hostname=RABBIT_HOSTNAME,
+    vhost=os.environ.get('RABBIT_ENV_VHOST', RABBIT_MQ['vhost']))
