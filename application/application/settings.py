@@ -1,5 +1,5 @@
 import os
-from .configs import MYSQL, RABBIT_MQ
+from .configs import MYSQL, RABBIT_MQ, MINIO, S3_CONFIG
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'invitation.apps.InvitationConfig',
+    'gallery.apps.GalleryConfig'
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,18 @@ REST_FRAMEWORK = {
 # A Token by default expires in 10days
 import datetime
 DEFAULT_TOKEN_EXPIRE_TIMESPAN = datetime.timedelta(days=7)
+
+
+STATIC_URL = '/static/'
+STATIC_ROOT = './static_files/'
+
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
+MINIO_STORAGE_ENDPOINT = 'minio1:9000'
+MINIO_STORAGE_ACCESS_KEY = MINIO['access_key']
+MINIO_STORAGE_SECRET_KEY = MINIO['secret_key']
+MINIO_STORAGE_USE_HTTPS = False
+MINIO_STORAGE_MEDIA_BUCKET_NAME = MINIO['media-bucket']
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+MINIO_STORAGE_STATIC_BUCKET_NAME = MINIO['static-bucket']
+MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True

@@ -21,7 +21,8 @@ class InvitationSerializer(serializers.HyperlinkedModelSerializer):
         default = {
             "expires_at" : datetime.now() + settings.DEFAULT_TOKEN_EXPIRE_TIMESPAN
         }
-        invitation, created = Invitation.objects.get_or_create(email=validated_data.get('email'), defaults=default)
+        invitation, created = Invitation.objects.get_or_create(
+            email=validated_data.get('email'), defaults=default)
         if not created:
             invitation.expires_at = default['expires_at']
             invitation.updated_at = datetime.now()
@@ -30,7 +31,7 @@ class InvitationSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_upload_link(self, invitation):
         request = self.context.get('request')
-        link = "/images/?access_token={token}".format(token=invitation.token)
+        link = "/gallery/?access_token={token}".format(token=invitation.token)
         return request.build_absolute_uri(link)
 
     

@@ -17,11 +17,14 @@ from django.contrib import admin
 from django.urls import include, path
 from invitation import views
 from rest_framework import routers
+from gallery.views import FilePolicyAPI
+
 
 router = routers.DefaultRouter()
 router.register(r'invitation', views.InvitationViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('api/', include(router.urls)),
     # path('admin/', admin.site.urls),
+    path(r'^api/files/policy/$', FilePolicyAPI.as_view(), name='upload-policy'),
 ]
