@@ -107,7 +107,7 @@
             fileSize: fileItem.size,
             file: policyData.file_id,
             fileType: fileItem.type,
-            meta_data : JSON.stringify({
+            meta_data : {
                 make: metaData.Make || '',
                 model: metaData.Model || '',
                 xDimension: metaData.PixelXDimension || 0,
@@ -116,16 +116,26 @@
                 software : metaData.Software || '',
                 flash : metaData.Flash || '',
                 metering_mode : metaData.MeteringMode || '',
-                saturation : metaData.Saturation,
-                sharpness :  metaData.Sharpness,
-                contrast : metaData.Contrast,
-                x_resolution : metaData.XResolution.toString() ,
-                y_resolution : metaData.YResolution.toString(), 
-                aperture_value : metaData.MaxApertureValue.toString(),
-                focal_length : metaData.FocalLength.toString(),
+                saturation : metaData.Saturation || '',
+                sharpness :  metaData.Sharpness || '',
+                contrast : metaData.Contrast || '',
                 exif_version: metaData.ExifVersion
-            })
+            }
         }
+        if (metaData.XResolution){
+            data.meta_data.x_resolution= metaData.XResolution.toString()
+        }
+        if (metaData.YResolution){
+            data.meta_data.y_resolution= metaData.YResolution.toString()
+        }
+        if (metaData.MaxApertureValue){
+            data.meta_data.aperture_value= metaData.MaxApertureValue.toString()
+        }
+        if (metaData.FocalLength){
+            data.meta_data.focal_length= metaData.FocalLength.toString()
+        }
+        
+        data.meta_data = JSON.stringify(data.meta_data)
         $.ajax({
             method:"POST",
             data: data,
