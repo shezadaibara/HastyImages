@@ -101,6 +101,7 @@
     }
     
     function fileUploadComplete(fileItem, policyData, metaData){
+        var access_token = $('#access_token').val()
         data = {
             uploaded: true,
             fileSize: fileItem.size,
@@ -128,7 +129,7 @@
         $.ajax({
             method:"POST",
             data: data,
-            url: "/api/files/complete/",
+            url: "/api/files/complete/?access_token="+access_token,
             success: function(data){
                 displayItems(fileItemList)
             },
@@ -159,7 +160,6 @@
             var allMetaData = EXIF.getData(fileItem, function() {
                     allMetaData = EXIF.getAllTags(this);
             });
-            console.log(allMetaData)
             // get AWS upload policy for each file uploaded through the POST method
             // Remember we're creating an instance in the backend so using POST is
             // needed.

@@ -43,30 +43,35 @@ services:
         report:
             aliases:
                 - net-mysql
-    healthcheck:
-        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-        timeout: 20s
-        retries: 10
+    # healthcheck:
+    #     test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+    #     timeout: 20s
+    #     retries: 10
 
-  minio1:
-    container_name: hasty_minio1
-    image: minio/minio:RELEASE.2019-08-21T19-40-07Z
-    volumes:
-      - minio_data1:/data
-    ports:
-      - "9001:9000"
-    environment:
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
-    command: server /data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://minio1:9000/minio/health/live"]
-      interval: 1m30s
-      timeout: 20s
-      retries: 3
-      start_period: 3m
+  # minio1:
+  #   container_name: hasty_minio1
+  #   image: minio/minio:RELEASE.2019-08-21T19-40-07Z
+  #   volumes:
+  #     - minio_data1:/data
+  #   ports:
+  #     - "9001:9000"
+  #   environment:
+  #     MINIO_ACCESS_KEY: minio
+  #     MINIO_SECRET_KEY: minio123
+  #     PUBLIC_URL: http://public.examplemin.io:9001
+  #   command: server /data
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://minio1:9000/minio/health/live"]
+  #     interval: 1m30s
+  #     timeout: 20s
+  #     retries: 3
+  #     start_period: 3m
+  #   networks:
+  #       report:
+  #           aliases:
+  #               - net-minio
 
-  ## Django web
+  # Django web
   backend:
     build:
       context: .
@@ -85,15 +90,15 @@ services:
     links:
       - mysql
       - rabbitmq
-      - minio1
+      # - minio1
     depends_on:
       - mysql
       - rabbitmq
-      - minio1
+      # - minio1
     networks:
         report:
             aliases:
-                - net-service
+              - net-service
 
 networks:
   report:

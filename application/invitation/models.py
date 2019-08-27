@@ -8,7 +8,7 @@ class Invitation(models.Model):
     """
     Model that is used to store all the Invitation requests. 
     """
-    token = models.UUIDField(verbose_name=_('Token'), default=uuid.uuid4, editable=False, primary_key=True)
+    token = models.CharField(verbose_name=_('Token'), default=uuid.uuid4, editable=False, primary_key=True, max_length=100)
     email = models.EmailField(verbose_name=_('Email'), max_length=100, null=False)
     created_at = models.DateTimeField(verbose_name=_('Create Date'), auto_now=True)
     updated_at = models.DateTimeField(verbose_name=_('Update Date'), auto_now=True)

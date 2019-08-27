@@ -2,6 +2,8 @@ from minio.error import (ResponseError, BucketAlreadyOwnedByYou,
                          BucketAlreadyExists)
 from minio import Minio
 from django.conf import settings
+import urllib3
+
 
 class MC:
     """
@@ -25,11 +27,12 @@ class MC:
                 settings.S3_CONFIG['MINIO_ENDPOINT'],
                 access_key=settings.S3_CONFIG['AWS_UPLOAD_ACCESS_KEY_ID'],
                 secret_key=settings.S3_CONFIG['AWS_UPLOAD_SECRET_KEY'],
-                secure=False
+                secure=settings.S3_CONFIG['SECURE'],
             )
             self.bucket = settings.S3_CONFIG['AWS_UPLOAD_BUCKET']
             self.region = settings.S3_CONFIG['AWS_UPLOAD_REGION']
-            if not self.client.bucket_exists(self.region):
+            print("AWS_UPLOAD_BUCKET >> ", self.bucket)
+            if not self.client.bucket_exists(self.bucket):
                 try:
                     self.client.make_bucket(self.bucket, location=self.region )
                 except BucketAlreadyOwnedByYou:
