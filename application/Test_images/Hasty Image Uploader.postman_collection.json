@@ -1,0 +1,177 @@
+{
+	"info": {
+		"_postman_id": "6704c95c-2968-42dd-af7b-03c4c6f55d61",
+		"name": "Hasty Image Uploader",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getUploadLink",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1ed6f5e4-1339-41ff-b551-c8a756242d16",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"pm.environment.set(\"access_token\", jsonData.token);",
+							"",
+							"console.log(pm.variables.get(\"access_token\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"shezad.aibara@gmail.com\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/api/invitation/",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"invitation",
+						""
+					]
+				},
+				"description": "POST : localhost:8000/invitation/\n\nAn Api endpoint to get the invite to upload_link\n\n## Payload\n```\n{\n\temail : <email_address>\n}\n```\n## Response\n```\n{\n    \"token\": \"41913f22-7fb1-4b6b-9396-5d68873b960c\",\n    \"email\": \"<emaill_address>\",\n    \"created_at\": \"<datetime>\",\n    \"updated_at\": \"2019-08-27T07:40:44.851229Z\",\n    \"expires_at\": \"2019-09-03T07:40:44.834132Z\",\n    \"upload_link\": \"http://localhost:8000/api/upload/?access_token=41913f22-7fb1-4b6b-9396-5d68873b960c\"\n}\n```\n\nNote: Multiple Request with the same payload will extend a token expiration to 7days starting today\n"
+			},
+			"response": []
+		},
+		{
+			"name": "getImagesList Api",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/api/images/?access_token={{access_token}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"images",
+						""
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{access_token}}"
+						}
+					]
+				},
+				"description": "Get the list of All the images for a given token. \n\n### GET localhost:8000/api/images/?access_token=a7822df7-7fb7-4f8b-a7d6-4115d8e5af0b\n\n### query_params\n```\n{ \"access_token\" : <uuid> }\n```\n\n### Response\n```\n\t\n```\n"
+			},
+			"response": []
+		},
+		{
+			"name": "CreateImagePolicy Api",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"filename\" : \"dummy.jpg\" }"
+				},
+				"url": {
+					"raw": "localhost:8000/api/files/policy/?access_token={{access_token}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"files",
+						"policy",
+						""
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{access_token}}"
+						}
+					]
+				},
+				"description": "localhost:8000/api/files/policy/?access_token={{access_token}}"
+			},
+			"response": []
+		},
+		{
+			"name": "UploadComplete Api",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5f37c436-4ae1-49b4-8723-08f4a6fdb0aa",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uploaded\": true,\n\t\"fileSize\": 4278,\n\t\"file\": 11,\n\t\"fileType\": \"image/jpeg\",\n\t\"metadata\": \"{}\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/api/files/complete/?access_token={{access_token}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"files",
+						"complete",
+						""
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{access_token}}"
+						}
+					]
+				},
+				"description": "localhost:8000/api/files/complete/?access_token={{access_token}}"
+			},
+			"response": []
+		}
+	]
+}
